@@ -2,11 +2,13 @@ package com.todo.todoapi.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "todos")
 public class Todo {
 	
 	@Id
+	@Field(name = "todoId")
 	private String todoId;
 	private String todoTitle;
 	private String todoStatus;
