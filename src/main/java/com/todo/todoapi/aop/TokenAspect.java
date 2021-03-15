@@ -44,18 +44,8 @@ public class TokenAspect {
 		return proceedingJoinPoint.proceed();
 	}
 	
-	@Around("userControllers()")
-	public Object generateToken(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-				.getRequest();
-		return proceedingJoinPoint.proceed();
-	}
-	
 	@Pointcut("execution(* com.todo.todoapi.controllers.TodoController.*(..))")
 	public void todoControllers() {
 	}
 	
-	@Pointcut("execution(* com.todo.todoapi.controllers.UserController.*(..))")
-	public void userControllers() {
-	}
 }

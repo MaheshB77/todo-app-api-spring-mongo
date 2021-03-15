@@ -26,23 +26,17 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 
-	@Autowired
-	private UserRepository userRepository;
-
 	@GetMapping("/{userId}")
 	public ResponseEntity<List<Todo>> getAllTodos(@PathVariable(name = "userId") String userId) {
-		User user = userRepository.findById(userId).get();
-		List<Todo> todos = user.getUserTodos();
+		List<Todo> todos = this.todoService.getAllTodos(userId);
 		return new ResponseEntity<List<Todo>>(todos, HttpStatus.OK);
 	}
 
 	@PutMapping("/{userId}")
-	public ResponseEntity<String> updateTodos(@PathVariable(name = "userId") String userId, @RequestBody User userToBeUpdated) {
-		User user = userRepository.findById(userId).get();
-		user.setUserTodos(userToBeUpdated.getUserTodos());
-		userRepository.save(user);
-		
-		return new ResponseEntity<String>("Updated todos", HttpStatus.OK);
+	public ResponseEntity<User> updateTodos(@PathVariable(name = "userId") String userId,
+			@RequestBody User userToBeUpdated) {
+		User updatedUser = this.todoService.updateTodos(userId, userToBeUpdated);
+		return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
 	}
 
 }

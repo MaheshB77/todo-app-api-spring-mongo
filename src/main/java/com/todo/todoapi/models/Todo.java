@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Todo {
 	
 	@Id
-	@Field(name = "todoId")
 	private String todoId;
 	private String todoTitle;
 	private String todoStatus;

@@ -20,11 +20,15 @@ import com.todo.todoapi.models.UserLoginModel;
 import com.todo.todoapi.repositories.UserRepository;
 import com.todo.todoapi.util.UserLoginUtil;
 
+/**
+ * @author mahesh
+ * 
+ */
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-	
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -45,30 +49,33 @@ public class UserController {
 //		Temp
 		userToAdd.setId(UUID.randomUUID().toString());
 		User newlyAddedUser = userRepository.save(userToAdd);
-		
+
 //		Generate a token
 		String token = tokenService.generateTokenFromUserEmail(userToAdd.getUserEmail());
-		
+
 //		Wrapping newly created user and jwt token into an object
 		UserWithToken userWithToken = new UserWithToken(newlyAddedUser, token);
-		
+
 		return new ResponseEntity<UserWithToken>(userWithToken, HttpStatus.OK);
 	}
 
 //	Do the login validation and return jwt token
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody UserLoginModel userLoginModel) {
+	public ResponseEntity<UserWithToken> login(@RequestBody UserLoginModel userLoginModel) {
 //		Do validation
 		User user = userLoginUtil.signIn(userLoginModel.getUserEmail(), userLoginModel.getPassword());
-		
+
 //		If user is validated then generate a token
-		if(user != null) {
+		if (user != null) {
 //			Generate token
 			String jwtToken = tokenService.generateTokenFromUserEmail(userLoginModel.getUserEmail());
-			return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
+
+//			Generate user with token
+			UserWithToken userWithToken = new UserWithToken(user, jwtToken);
+			return new ResponseEntity<UserWithToken>(userWithToken, HttpStatus.OK);
 		}
 
 //		If user is not valid
-		return new ResponseEntity<String>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<UserWithToken>(new UserWithToken(null, null), HttpStatus.UNAUTHORIZED);
 	}
 }
